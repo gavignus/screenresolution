@@ -36,6 +36,8 @@ struct config {
     double r; // refresh rate
 };
 
+CFDictionaryRef createOptionsForDisplayModes();
+
 unsigned int setDisplayToMode(CGDirectDisplayID display, CGDisplayModeRef mode);
 unsigned int configureDisplay(CGDirectDisplayID display,
                               struct config *config,

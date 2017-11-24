@@ -137,7 +137,10 @@ unsigned int listAvailableModes(CGDirectDisplayID display, int displayNum) {
     int numModes = 0;
     int i;
 
-    CFArrayRef allModes = CGDisplayCopyAllDisplayModes(display, NULL);
+    CFDictionaryRef options = createOptionsForDisplayModes();
+    CFArrayRef allModes = CGDisplayCopyAllDisplayModes(display, options);
+    CFRelease(options);
+    
     if (allModes == NULL) {
         returncode = 0;
     }
