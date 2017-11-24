@@ -20,6 +20,8 @@
 
 #include "cg_utils.h"
 
+#import <Foundation/Foundation.h>
+
 size_t bitDepth(CGDisplayModeRef mode) {
     size_t depth = 0;
 	CFStringRef pixelEncoding = CGDisplayModeCopyPixelEncoding(mode);
@@ -48,7 +50,7 @@ unsigned int configureDisplay(CGDirectDisplayID display, struct config *config, 
     unsigned int returncode = 1;
     CFArrayRef allModes = CGDisplayCopyAllDisplayModes(display, NULL);
     if (allModes == NULL) {
-        NSLog(CFSTR("Error: failed trying to look up modes for display %u"), displayNum);
+        NSLog(@"Error: failed trying to look up modes for display %u", displayNum);
     }
 
     CGDisplayModeRef newMode = NULL;
@@ -75,10 +77,10 @@ unsigned int configureDisplay(CGDirectDisplayID display, struct config *config, 
     }
     CFRelease(allModes);
     if (newMode != NULL) {
-        NSLog(CFSTR("set mode on display %u to %ux%ux%u@%.0f"), displayNum, pw, ph, pd, pr);
+        NSLog(@"set mode on display %u to %ux%ux%u@%.0f", displayNum, pw, ph, pd, pr);
         setDisplayToMode(display,newMode);
     } else {
-        NSLog(CFSTR("Error: mode %ux%ux%u@%f not available on display %u"), 
+        NSLog(@"Error: mode %ux%ux%u@%f not available on display %u",
                 config->w, config->h, config->d, config->r, displayNum);
         returncode = 0;
     }
@@ -90,17 +92,17 @@ unsigned int setDisplayToMode(CGDirectDisplayID display, CGDisplayModeRef mode) 
     CGDisplayConfigRef config;
     rc = CGBeginDisplayConfiguration(&config);
     if (rc != kCGErrorSuccess) {
-        NSLog(CFSTR("Error: failed CGBeginDisplayConfiguration err(%u)"), rc);
+        NSLog(@"Error: failed CGBeginDisplayConfiguration err(%u)", rc);
         return 0;
     }
     rc = CGConfigureDisplayWithDisplayMode(config, display, mode, NULL);
     if (rc != kCGErrorSuccess) {
-        NSLog(CFSTR("Error: failed CGConfigureDisplayWithDisplayMode err(%u)"), rc);
+        NSLog(@"Error: failed CGConfigureDisplayWithDisplayMode err(%u)", rc);
         return 0;
     }
     rc = CGCompleteDisplayConfiguration(config, kCGConfigureForSession);
     if (rc != kCGErrorSuccess) {
-        NSLog(CFSTR("Error: failed CGCompleteDisplayConfiguration err(%u)"), rc);        
+        NSLog(@"Error: failed CGCompleteDisplayConfiguration err(%u)", rc);
         return 0;
     }
     return 1;
@@ -117,14 +119,14 @@ unsigned int parseStringConfig(const char *string, struct config *out) {
         numConverted = sscanf(string, "%lux%lux%lu", &w, &h, &d);
         if (numConverted != 3) {
             rc = 0;
-            NSLog(CFSTR("Error: the mode '%s' couldn't be parsed"), string);
+            NSLog(@"Error: the mode '%s' couldn't be parsed", string);
         } else {
             out->w = w;
             out->h = h;
             out->d = d;
             r=60.0;
             rc = 1;
-            NSLog(CFSTR("Warning: no refresh rate specified, assuming %.0lfHz"), r);
+            NSLog(@"Warning: no refresh rate specified, assuming %.0lfHz", r);
         }
     } else {
         out->w = w;

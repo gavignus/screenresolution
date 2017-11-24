@@ -18,9 +18,11 @@
  * 02110-1301, USA.
  */
 
+#import <Foundation/Foundation.h>
+
 #include "version.h"
 #include "cg_utils.h"
- 
+
 // Number of modes to list per line.
 #define MODES_PER_LINE 3
 
@@ -42,7 +44,7 @@ int main(int argc, const char *argv[]) {
         CFStringAppend(args, CFSTR(" "));
     }
     // This has security implications.  Will look at that later
-    NSLog(CFSTR("%@"), args);
+    NSLog(@"%@", args);
     unsigned int exitcode = 0;
 
     if (argc > 1) {
@@ -55,18 +57,18 @@ int main(int argc, const char *argv[]) {
 
         rc = CGGetActiveDisplayList(0, NULL, &activeDisplayCount);
         if (rc != kCGErrorSuccess) {
-            NSLog(CFSTR("%s"), "Error: failed to get list of active displays");
+            NSLog(@"%s", "Error: failed to get list of active displays");
             return 1;
         }
         // Allocate storage for the next CGGetActiveDisplayList call
         activeDisplays = (CGDirectDisplayID *) malloc(activeDisplayCount * sizeof(CGDirectDisplayID));
         if (activeDisplays == NULL) {
-            NSLog(CFSTR("%s"), "Error: could not allocate memory for display list");
+            NSLog(@"%s", "Error: could not allocate memory for display list");
             return 1;
         }
         rc = CGGetActiveDisplayList(activeDisplayCount, activeDisplays, &displayCount);
         if (rc != kCGErrorSuccess) {
-            NSLog(CFSTR("%s"), "Error: failed to get list of active displays");
+            NSLog(@"%s", "Error: failed to get list of active displays");
             return 1;
         }
 
@@ -99,7 +101,7 @@ int main(int argc, const char *argv[]) {
                 printf("screenresolution version %s\nLicensed under GPLv2\n", VERSION);
                 keepgoing = 0;
             } else {
-                NSLog(CFSTR("I'm sorry %s. I'm afraid I can't do that"), getlogin());
+                NSLog(@"I'm sorry %s. I'm afraid I can't do that", getlogin());
                 exitcode++;
                 keepgoing = 0;
             }
@@ -107,7 +109,7 @@ int main(int argc, const char *argv[]) {
         free(activeDisplays);
         activeDisplays = NULL;
     } else {
-        NSLog(CFSTR("%s"), "Incorrect command line");
+        NSLog(@"%s", "Incorrect command line");
         exitcode++;
     }
     return exitcode > 0;
@@ -117,10 +119,10 @@ unsigned int listCurrentMode(CGDirectDisplayID display, int displayNum) {
     unsigned int returncode = 1;
     CGDisplayModeRef currentMode = CGDisplayCopyDisplayMode(display);
     if (currentMode == NULL) {
-        NSLog(CFSTR("%s"), "Error: unable to copy current display mode");
+        NSLog(@"%s", "Error: unable to copy current display mode");
         returncode = 0;
     }
-    NSLog(CFSTR("Display %d: %ux%ux%u@%.0f"),
+    NSLog(@"Display %d: %ux%ux%u@%.0f",
            displayNum,
            CGDisplayModeGetWidth(currentMode),
            CGDisplayModeGetHeight(currentMode),
